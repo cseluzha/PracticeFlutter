@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => DiscoverProvider())
+        // .. is notation on cascade. is reference to the main objet. 
+        ChangeNotifierProvider(
+          lazy: false, // create inmediatly the instance of our provider
+          create: (_) => DiscoverProvider()..loadNextPage())
       ],
       child: MaterialApp(
           title: 'Toktik',
