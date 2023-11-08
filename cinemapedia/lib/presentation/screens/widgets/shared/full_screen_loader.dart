@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class FullScreenLoader extends StatelessWidget {
   const FullScreenLoader({super.key});
-  
+  // Loading messages during the loading the movies.
   Stream<String> getLoadingMessages() {
     final messages = <String>[
       'Cargando películas',

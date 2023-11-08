@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'movies_providers.dart';
-
+// Provider for multiple pendinds and checking the data for the endpoint 
+// Listen multiple providers currently
 final initialLoadingProvider = Provider<bool>((ref) {
 
   final step1 = ref.watch( nowPlayingMoviesProvider ).isEmpty;
