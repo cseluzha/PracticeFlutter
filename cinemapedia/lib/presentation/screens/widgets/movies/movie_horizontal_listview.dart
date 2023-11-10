@@ -2,6 +2,7 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:go_router/go_router.dart';
 
 class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
@@ -20,6 +21,7 @@ class MovieHorizontalListview extends StatefulWidget {
   State<MovieHorizontalListview> createState() =>
       _MovieHorizontalListviewState();
 }
+
 /// into the Stateful Widget the reference to props is via widget.
 class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
   final scrollController = ScrollController();
@@ -101,7 +103,11 @@ class _Slide extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2)),
                     );
                   }
-                  return FadeIn(child: child);
+                  // No hace ni puta madre el Gesture detector
+                  return GestureDetector(
+                    // When on tap on image, navigate to other screen.
+                      onTap: () => context.push('movie/${movie.id}'),
+                      child: FadeIn(child: child));
                 },
               ),
             ),
