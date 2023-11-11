@@ -24,8 +24,6 @@ class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
 
   Future<void> loadMovie(String movieId) async {
     if (state[movieId] != null) return;
-
-    print('Call the iml for the call the api');
     // Call the function from get the information.
     final movie = await getMovie(movieId);
     //Udate the state with the new movie
