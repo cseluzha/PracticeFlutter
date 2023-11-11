@@ -88,7 +88,7 @@ class _MovieDetails extends StatelessWidget {
 
               const SizedBox( width: 10 ),
 
-              // Descripción
+              // Description
               SizedBox(
                 width: (size.width - 40) * 0.7,
                 child: Column(
@@ -105,7 +105,7 @@ class _MovieDetails extends StatelessWidget {
         ),
 
         
-        // Generos de la película
+        // Movie genres
         Padding(
           padding: const EdgeInsets.all(8),
           child: Wrap(
