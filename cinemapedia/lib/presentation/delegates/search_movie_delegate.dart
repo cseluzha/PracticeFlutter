@@ -14,6 +14,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   List<Movie> initialMovies;
 
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  // for the loading.
   StreamController<bool> isLoadingStream = StreamController.broadcast();
 
   Timer? _debounceTimer;
@@ -47,49 +48,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       final movies = await searchMovies(query);
       initialMovies = movies;
       debouncedMovies.add(movies);
+      //stop loading indicator
       isLoadingStream.add(false);
     });
   }
 
-  /// Change the place holder into the input search section.
-  // @override
-  // String get searchFieldLabel => 'Search Movie';
-
-  /// Actions do you want to execute on search section. Right slide
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      FadeIn(
-        animate: query.isNotEmpty,
-        child: IconButton(
-            onPressed: () => query = '', icon: const Icon(Icons.clear)),
-      )
-    ];
-  }
-
-  /// Actions do you want to execute on search section. Left slide
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          clearStreams();
-          close(context,
-              null); // on null can you put something how return value if do you want.
-        },
-        icon: const Icon(Icons.arrow_back_ios_new_rounded));
-  }
-
-  /// When you click enter or search button, show the results on this override.
-  @override
-  Widget buildResults(BuildContext context) {
-    return const Text('buildResults');
-  }
-
-  /// If exist suggestions, can you show a suggestions on this override.
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    //Now check the query and save info.
-    _onQueryChanged(query);
+// Need te same for Result and Suggestions
+  Widget buildResultsAndSuggestions() {
     /*
     In this case we need change FutureBuilder to StreamBuilder because we need to have control 
     about the call to api, we need to call only when the user need the information. 
@@ -111,6 +76,67 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
         );
       },
     );
+  }
+
+  /// Change the place holder into the input search section.
+  // @override
+  // String get searchFieldLabel => 'Search Movie';
+
+  /// Actions do you want to execute on search section. Right slide
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    
+    return [
+      StreamBuilder(
+        initialData: false,
+        stream: isLoadingStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data ?? false) {
+            // Add spin... loading indicator 
+            return SpinPerfect(
+              duration: const Duration(seconds: 20),
+              spins: 10,
+              infinite: true,
+              child: IconButton(
+                  onPressed: () => query = '',
+                  icon: const Icon(Icons.refresh_rounded)),
+            );
+          }
+
+          return FadeIn(
+            animate: query.isNotEmpty,
+            child: IconButton(
+                onPressed: () => query = '', icon: const Icon(Icons.clear)),
+          );
+        },
+      ),
+    ];
+  }
+
+  /// Actions do you want to execute on search section. Left slide
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          clearStreams();
+          close(context,
+              null); // on null can you put something how return value if do you want.
+        },
+        icon: const Icon(Icons.arrow_back_ios_new_rounded));
+  }
+
+  /// When you click enter or search button, show the results on this override.
+  @override
+  Widget buildResults(BuildContext context) {
+    return buildResultsAndSuggestions();
+  }
+
+  /// If exist suggestions, can you show a suggestions on this override.
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    //Now check the query and save info.
+    _onQueryChanged(query);
+    return buildResultsAndSuggestions();
   }
 }
 
