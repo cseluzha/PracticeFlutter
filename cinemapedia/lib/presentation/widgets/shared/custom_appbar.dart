@@ -29,7 +29,7 @@ class CustomAppbar extends ConsumerWidget {
                     onPressed: () async {
                       //Listen the repository provider of movie
                       final movieRepository = ref.read(movieRepositoryProvider);
-                      showSearch(
+                      showSearch<Movie?>(
                           context: context,
                           delegate: SearchMovieDelegate(
                             searchMovies: movieRepository.searchMovies,

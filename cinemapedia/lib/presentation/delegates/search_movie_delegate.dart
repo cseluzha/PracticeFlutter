@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:animate_do/animate_do.dart';
+
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
@@ -7,17 +9,48 @@ import 'package:flutter/material.dart';
 typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 
 ///This delegate manage the section for search a movie.
-class SearchMovieDelegate extends SearchDelegate {
+class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMovies;
   // List<Movie> initialMovies;
 
+  StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  StreamController<bool> isLoadingStream = StreamController.broadcast();
+
+  Timer? _debounceTimer;
+
   SearchMovieDelegate({
     required this.searchMovies,
-    // required this.initialMovies,
+   // required this.initialMovies,
   }) : super(
           searchFieldLabel: 'Search Movie',
           // textInputAction: TextInputAction.done
         );
+
+  void clearStreams() {
+    debouncedMovies.close();
+  }
+
+// validate if the query changes for call to api for get information about movies
+  void _onQueryChanged(String query) {
+    isLoadingStream.add(true);
+    //clean the timer
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    //create the timer
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      // Validation only search if query have data.
+      // if ( query.isEmpty ) {
+      //   debouncedMovies.add([]);
+      //   return;
+      // }
+
+      final movies = await searchMovies(query);
+      print(movies.length);
+      //initialMovies = movies;
+      debouncedMovies.add(movies);
+      isLoadingStream.add(false);
+    });
+  }
 
   /// Change the place holder into the input search section.
   // @override
@@ -40,7 +73,7 @@ class SearchMovieDelegate extends SearchDelegate {
   Widget? buildLeading(BuildContext context) {
     return IconButton(
         onPressed: () {
-          //clearStreams();
+          clearStreams();
           close(context,
               null); // on null can you put something how return value if do you want.
         },
@@ -56,23 +89,26 @@ class SearchMovieDelegate extends SearchDelegate {
   /// If exist suggestions, can you show a suggestions on this override.
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMovies(query),
+    //Now check the query and save info.
+    _onQueryChanged(query);
+    /*
+    In this case we need change FutureBuilder to StreamBuilder because we need to have control 
+    about the call to api, we need to call only when the user need the information. 
+    */
+    return StreamBuilder(
+      //future: searchMovies(query),
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
 
         return ListView.builder(
           itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final movie = movies[index];
-            return _MovieItem(
-              movie: movie,
+          itemBuilder: (context, index) => _MovieItem(
+              movie: movies[index],
               onMovieSelected: (context, movie) {
-                //clearStreams();
+                clearStreams();
                 close(context, movie);
-              },
-            );
-          },
+              }),
         );
       },
     );
@@ -118,7 +154,6 @@ class _MovieItem extends StatelessWidget {
             SizedBox(
               width: size.width * 0.7,
               child: Column(
-                
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(movie.title, style: textStyles.titleMedium),
