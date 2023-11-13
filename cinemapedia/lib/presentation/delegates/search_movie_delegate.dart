@@ -11,7 +11,7 @@ typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 ///This delegate manage the section for search a movie.
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMovies;
-  // List<Movie> initialMovies;
+  List<Movie> initialMovies;
 
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
   StreamController<bool> isLoadingStream = StreamController.broadcast();
@@ -20,7 +20,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   SearchMovieDelegate({
     required this.searchMovies,
-   // required this.initialMovies,
+    required this.initialMovies,
   }) : super(
           searchFieldLabel: 'Search Movie',
           // textInputAction: TextInputAction.done
@@ -45,8 +45,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       // }
 
       final movies = await searchMovies(query);
-      print(movies.length);
-      //initialMovies = movies;
+      initialMovies = movies;
       debouncedMovies.add(movies);
       isLoadingStream.add(false);
     });
@@ -96,7 +95,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     about the call to api, we need to call only when the user need the information. 
     */
     return StreamBuilder(
-      //future: searchMovies(query),
+      initialData: initialMovies,
       stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
