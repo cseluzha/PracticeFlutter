@@ -1,9 +1,8 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/presentation/providers/actors/actors_by_movie_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 
 // use riverpod Consumer... to get information of providers
 class MovieScreen extends ConsumerStatefulWidget {
@@ -191,12 +190,21 @@ class _ActorsByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+//This is a quitly access and auto destroy when not use anymore and only use this feature on this screen.
+final isFavoriteProvider =
+    FutureProvider.family.autoDispose((ref, int movieId) {
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+  return localStorageRepository.isMovieFavorite(movieId);
+});
+
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    //Listen if the movie exist into the local database.
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
     // Obtain size front device;
     final size = MediaQuery.of(context).size;
     return SliverAppBar(
@@ -206,9 +214,23 @@ class _CustomSliverAppBar extends StatelessWidget {
       // Add custom actions for sliver app bar
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            await ref
+                .watch(localStorageRepositoryProvider)
+                .toggleFavorite(movie);
+            // invalidate the movie.id state and return the original state.     
+            ref.invalidate(isFavoriteProvider(movie.id));
+          },
+          // when have three metods for determinate any actions. 
+          icon: isFavoriteFuture.when(
+            loading: () => const CircularProgressIndicator(strokeWidth: 2),
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                : const Icon(Icons.favorite_border),
+            error: (_, __) => throw UnimplementedError(),
+          ),
           //Icon when unfavorite
-          icon: const Icon(Icons.favorite_border)
+          //icon: const Icon(Icons.favorite_border)
           //Icon when is favorite
           // icon: const Icon(
           //   Icons.favorite_rounded,
