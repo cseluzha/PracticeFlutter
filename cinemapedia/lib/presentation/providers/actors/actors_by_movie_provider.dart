@@ -1,5 +1,5 @@
 import 'package:cinemapedia/domain/entities/actor.dart';
-import 'package:cinemapedia/presentation/providers/actors/actors_repository_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //Define the provider for the actors.

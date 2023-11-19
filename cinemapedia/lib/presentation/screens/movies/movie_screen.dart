@@ -1,8 +1,9 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
+
+import 'package:cinemapedia/presentation/providers/providers.dart';
 
 // use riverpod Consumer... to get information of providers
 class MovieScreen extends ConsumerStatefulWidget {
