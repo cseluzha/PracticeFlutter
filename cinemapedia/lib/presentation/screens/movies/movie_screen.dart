@@ -216,13 +216,21 @@ class _CustomSliverAppBar extends ConsumerWidget {
       actions: [
         IconButton(
           onPressed: () async {
+            // the old form:
+            // await ref
+            //     .read(localStorageRepositoryProvider)
+            //     .toggleFavorite(movie);
+
+            //new form:
+            //Now need to add/remove into the favorite provider for refresh the view favorites.
             await ref
-                .watch(localStorageRepositoryProvider)
+                .read(favoriteMoviesProvider.notifier)
                 .toggleFavorite(movie);
-            // invalidate the movie.id state and return the original state.     
+
+            // invalidate the movie.id state and return the original state.
             ref.invalidate(isFavoriteProvider(movie.id));
           },
-          // when have three metods for determinate any actions. 
+          // when have three metods for determinate any actions.
           icon: isFavoriteFuture.when(
             loading: () => const CircularProgressIndicator(strokeWidth: 2),
             data: (isFavorite) => isFavorite

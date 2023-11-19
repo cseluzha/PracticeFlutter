@@ -39,6 +39,7 @@ class StorageMoviesNotifier extends StateNotifier<Map<int, Movie>> {
     return movies;
   }
 
+// for add/remove favorite movie. 
   Future<void> toggleFavorite(Movie movie) async {
     await localStorageRepository.toggleFavorite(movie);
     final bool isMovieInFavorites = state[movie.id] != null;
