@@ -2,7 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:cinemapedia/domain/domain.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 
 class MoviePosterLink extends StatelessWidget {
   final Movie movie;

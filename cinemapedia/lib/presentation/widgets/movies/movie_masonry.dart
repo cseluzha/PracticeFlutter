@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'package:cinemapedia/domain/domain.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 
 // This a repesentation of show items like grid but different

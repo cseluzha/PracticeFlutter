@@ -1,6 +1,6 @@
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:cinemapedia/domain/domain.dart';
 import 'movies_providers.dart';
 
 // Provider  with riverpod have all providers and only use to neccesary.

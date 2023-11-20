@@ -8,4 +8,9 @@ class HumanFormats {
 
     return formattedNumber;
   }
+
+  static String shortDate(DateTime date) {
+    final format = DateFormat.yMMMEd();
+    return format.format(date);
+  }
 }

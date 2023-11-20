@@ -1,9 +1,11 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:cinemapedia/config/helpers/human_formats.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 
 // use riverpod Consumer... to get information of providers
 class MovieScreen extends ConsumerStatefulWidget {
@@ -71,121 +73,111 @@ class _MovieDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Imagen
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  movie.posterPath,
-                  width: size.width * 0.3,
-                ),
-              ),
+         //* Title, OverView and Rating
+        _TitleAndOverview(movie: movie, size: size, textStyles: textStyles),
 
-              const SizedBox(width: 10),
+        //* Movie genres
+        _Genres(movie: movie),
 
-              // Description
-              SizedBox(
-                width: (size.width - 40) * 0.7,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(movie.title, style: textStyles.titleLarge),
-                    Text(movie.overview),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
+        //* Movie actors
+        ActorsByMovie(movieId: movie.id.toString()),
 
-        // Movie genres
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Wrap(
-            children: [
-              ...movie.genreIds.map((gender) => Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Chip(
-                      label: Text(gender),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  ))
-            ],
-          ),
-        ),
+        //* Videos of the movie (if you have it)
+        VideosFromMovie(movieId: movie.id),
 
-        _ActorsByMovie(movieId: movie.id.toString()),
-
-        const SizedBox(height: 50),
+        //* Similar Movies
+        SimilarMovies(movieId: movie.id),
       ],
     );
   }
 }
 
-/// Class for the actors information of a movie
-class _ActorsByMovie extends ConsumerWidget {
-  final String movieId;
+// Class for the genres of a movie
+class _Genres extends StatelessWidget {
+  const _Genres({
+    required this.movie,
+  });
 
-  const _ActorsByMovie({required this.movieId});
+  final Movie movie;
 
   @override
-  Widget build(BuildContext context, ref) {
-    final actorsByMovie = ref.watch(actorsByMovieProvider);
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+        width: double.infinity,
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          children: [
+            ...movie.genreIds.map((gender) => Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  child: Chip(
+                    label: Text(gender),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-    if (actorsByMovie[movieId] == null) {
-      return const CircularProgressIndicator(strokeWidth: 2);
-    }
-    final actors = actorsByMovie[movieId]!;
 
-    return SizedBox(
-      height: 300,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: actors.length,
-        itemBuilder: (context, index) {
-          final actor = actors[index];
+// Class for the title and overview of a movie
+class _TitleAndOverview extends StatelessWidget {
+  const _TitleAndOverview({
+    required this.movie,
+    required this.size,
+    required this.textStyles,
+  });
 
-          return Container(
-            padding: const EdgeInsets.all(8.0),
-            width: 135,
+  final Movie movie;
+  final Size size;
+  final TextTheme textStyles;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Imagen
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              movie.posterPath,
+              width: size.width * 0.3,
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          // Descripción
+          SizedBox(
+            width: (size.width - 40) * 0.7,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Actor's Photo
-                FadeInRight(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      actor.profilePath,
-                      height: 180,
-                      width: 135,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-
-                // Actor's Name
-                const SizedBox(
-                  height: 5,
-                ),
-
-                Text(actor.name, maxLines: 2),
-                Text(
-                  actor.character ?? '',
-                  maxLines: 2,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis),
-                ),
+                Text(movie.title, style: textStyles.titleLarge),
+                Text(movie.overview),
+                const SizedBox(height: 10),
+                MovieRating(voteAverage: movie.voteAverage),
+                Row(
+                  children: [
+                    const Text('Estreno:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 5),
+                    Text(HumanFormats.shortDate(movie.releaseDate))
+                  ],
+                )
               ],
             ),
-          );
-        },
+          )
+        ],
       ),
     );
   }

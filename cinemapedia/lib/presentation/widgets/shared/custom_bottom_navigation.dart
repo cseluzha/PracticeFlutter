@@ -12,7 +12,7 @@ class CustomBottomNavigation extends StatelessWidget {
       case 0:
         context.go('/home/0');
         break;
-      //Categories Screen
+      //Popular Screen
       case 1:
         context.go('/home/1');
         break;
@@ -25,14 +25,17 @@ class CustomBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return BottomNavigationBar(
         elevation: 0,
+        selectedItemColor: colors.primary,
         currentIndex: currentIndex,
         onTap: (value) => onItemTapped(context, value),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_max), label: 'Inicio'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.label_outline), label: 'Categorías'),
+              icon: Icon(Icons.thumbs_up_down), label: 'Populares'),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite_outline), label: 'Favoritos'),
         ]);
