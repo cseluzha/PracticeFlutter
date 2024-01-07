@@ -1,5 +1,6 @@
 part of 'counter_bloc.dart';
 
+// Equatable allow compare object of  a class
 class CounterState extends Equatable {
 
   final int counter;
