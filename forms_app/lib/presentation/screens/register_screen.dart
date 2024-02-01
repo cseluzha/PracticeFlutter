@@ -60,6 +60,7 @@ class _RegisterFormState extends State<_RegisterForm> {
     final registerCubit = context.watch<RegisterCubit>();
     final username = registerCubit.state.username;
     final password = registerCubit.state.password;
+    final emailInput = registerCubit.state.email;
 
     return Form(
         child: Column(
@@ -74,20 +75,8 @@ class _RegisterFormState extends State<_RegisterForm> {
         ),
         CustomTextFormField(
           label: 'Email',
-          onChanged: (value) {
-            registerCubit.emailChanged(value);
-          },
-          validator: (value) {
-            if (value == null || value.isEmpty) return 'Field is required';
-            if (value.trim().isEmpty) return 'Field is required';
-            final emailRegExp = RegExp(
-              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-            );
-
-            if (!emailRegExp.hasMatch(value)) return 'email invalid';
-
-            return null;
-          },
+          onChanged: registerCubit.emailChanged,
+          errorMessage: emailInput.errorMessage,
         ),
         const SizedBox(
           height: 20,
