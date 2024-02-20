@@ -8,13 +8,14 @@ environment:
 
 dependencies:
   equatable: ^2.0.5
+  firebase_messaging: ^14.7.16
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.4
   go_router: ^13.2.0
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
 
