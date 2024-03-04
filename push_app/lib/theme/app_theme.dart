@@ -6,4 +6,3 @@ class AppTheme {
         colorSchemeSeed: Colors.red
       );
 }
-∏
