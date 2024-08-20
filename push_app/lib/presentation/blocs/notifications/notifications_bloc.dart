@@ -9,7 +9,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationsBloc() : super(const NotificationsState()) {
     // on<NotificationsEvent>((event, emit) {
-    //   // TODO: implement event handler
+       // TODO: implement event handler
     // });
   }
 
