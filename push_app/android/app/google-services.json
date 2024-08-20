@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1026882809929",
+    "project_id": "cs-flutter-pushapp",
+    "storage_bucket": "cs-flutter-pushapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026882809929:android:5d5076d02f2c03dc780f98",
+        "android_client_info": {
+          "package_name": "dev.chalchiuhcuauhtli.push_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxgWG6lWCCXrs0KWnekKvQm7Ms16NfmCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
