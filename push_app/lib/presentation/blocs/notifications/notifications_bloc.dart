@@ -12,6 +12,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationsBloc() : super(const NotificationsState()) {
     on<NotificationStatusChanged>(_notificationStatusChanged);
+    _initialStatusCheck();
   }
 
   static Future<void> initializeFCM() async {
@@ -23,6 +24,33 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   void _notificationStatusChanged(
       NotificationStatusChanged event, Emitter<NotificationsState> emit) {
     emit(state.copyWith(status: event.status));
+    _getFCMToken();
+  }
+
+  void _initialStatusCheck() async {
+    final settings = await messaging.getNotificationSettings();
+    add(NotificationStatusChanged(settings.authorizationStatus));
+    /*
+    Save the token in the backend.
+    user:[
+    Token1,
+    Token2,
+    Token3,
+    TokenN
+    ]
+     */
+  }
+
+  void _getFCMToken() async {
+    if (state.status != AuthorizationStatus.authorized) return;
+
+    String? token = await messaging.getToken();
+    print('Token: $token');
+  }
+
+  void _handleRemoteMessage(RemoteMessage message) {
+    print('Message data: ${message.data}');
+    print('Message notification: ${message.notification}');
   }
 
   void requestPermission() async {
