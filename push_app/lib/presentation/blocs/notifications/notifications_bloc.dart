@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:push_app/domain/entities/push_message.dart';
 import 'package:push_app/firebase_options.dart';
 
 part 'notifications_event.dart';
@@ -12,7 +13,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationsBloc() : super(const NotificationsState()) {
     on<NotificationStatusChanged>(_notificationStatusChanged);
+    // Verifid the state notification status
     _initialStatusCheck();
+    // Listener for notification on foreground
+    _onForegroundMessage();
   }
 
   static Future<void> initializeFCM() async {
@@ -49,8 +53,16 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _handleRemoteMessage(RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
-    print('Message notification: ${message.notification}');
+
+    if (message.notification == null) return;
+
+    print('Message also contained a notification: ${message.notification}');
+  }
+
+  void _onForegroundMessage() {
+    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
   }
 
   void requestPermission() async {
@@ -64,5 +76,14 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       sound: true,
     );
     add(NotificationStatusChanged(settings.authorizationStatus));
+  }
+
+  PushMessage? getMessageById(String pushMessageId) {
+    final exist = state.notifications
+        .any((element) => element.messageId == pushMessageId);
+    if (!exist) return null;
+
+    return state.notifications
+        .firstWhere((element) => element.messageId == pushMessageId);
   }
 }
