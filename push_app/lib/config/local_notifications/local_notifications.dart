@@ -35,7 +35,7 @@ class LocalNotifications {
     const androidDetails = AndroidNotificationDetails(
         'channelId', 'channelName',
         playSound: true,
-        sound: RawResourceAndroidNotificationSound('notification'),
+        sound: RawResourceAndroidNotificationSound('notification_test'),
         importance: Importance.max,
         priority: Priority.high);
 
