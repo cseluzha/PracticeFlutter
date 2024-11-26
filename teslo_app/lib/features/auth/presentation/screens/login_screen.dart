@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_app/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_app/features/shared/shared.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -45,11 +47,13 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loginForm = ref.watch(loginFormProvider);
+
     final textStyles = Theme.of(context).textTheme;
 
     return Padding(
@@ -59,32 +63,40 @@ class _LoginForm extends StatelessWidget {
           const SizedBox(height: 50),
           Text('Login', style: textStyles.titleLarge),
           const SizedBox(height: 90),
-          const CustomTextFormField(
-            label: 'Correo',
+          CustomTextFormField(
+            label: 'Email',
             keyboardType: TextInputType.emailAddress,
+            onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
+            errorMessage:
+                loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
           const SizedBox(height: 30),
-          const CustomTextFormField(
-            label: 'Contraseña',
+          CustomTextFormField(
+            label: 'Password',
             obscureText: true,
+            onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+            errorMessage:
+                loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
           const SizedBox(height: 30),
           SizedBox(
               width: double.infinity,
               height: 60,
               child: CustomFilledButton(
-                text: 'Ingresar',
+                text: 'Log in',
                 buttonColor: Colors.black,
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(loginFormProvider.notifier).onFormSubmit();
+                },
               )),
           const Spacer(flex: 2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('¿No tienes cuenta?'),
+              const Text('Don\'t have an account?'),
               TextButton(
                   onPressed: () => context.push('/register'),
-                  child: const Text('Crea una aquí'))
+                  child: const Text('Create one here'))
             ],
           ),
           const Spacer(flex: 1),
