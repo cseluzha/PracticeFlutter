@@ -44,3 +44,6 @@ app.*.map.json
 
 # Visual Studio COde
 .vscode/
+
+# Environment files
+.env
