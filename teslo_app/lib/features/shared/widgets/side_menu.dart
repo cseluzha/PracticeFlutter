@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:teslo_app/features/shared/shared.dart';
 
 class SideMenu extends StatefulWidget {
