@@ -15,4 +15,16 @@ class User {
   bool get isAdmin {
     return roles.contains('admin');
   }
+
+  @override
+  String toString() {
+    return '''
+  User:
+      id: $id
+   email: $email
+fullName: $fullName
+   roles: $roles
+   token: $token
+''';
+  }
 }
