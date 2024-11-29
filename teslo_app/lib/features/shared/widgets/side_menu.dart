@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:teslo_app/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_app/features/shared/shared.dart';
 
-class SideMenu extends StatefulWidget {
+class SideMenu extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const SideMenu({super.key, required this.scaffoldKey});
 
   @override
-  State<SideMenu> createState() => _SideMenuState();
+  SideMenuState createState() => SideMenuState();
 }
 
-class _SideMenuState extends State<SideMenu> {
+class SideMenuState extends ConsumerState<SideMenu> {
   int navDrawerIndex = 0;
 
   @override
@@ -41,7 +43,7 @@ class _SideMenuState extends State<SideMenu> {
           ),
           const NavigationDrawerDestination(
             icon: Icon(Icons.home_outlined),
-            label: Text('Productos'),
+            label: Text('Products'),
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
@@ -49,11 +51,15 @@ class _SideMenuState extends State<SideMenu> {
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 10, 16, 10),
-            child: Text('Otras opciones'),
+            child: Text('Others Options'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CustomFilledButton(onPressed: () {}, text: 'Cerrar sesión'),
+            child: CustomFilledButton(
+                onPressed: () {
+                  ref.read(authProvider.notifier).logout();
+                },
+                text: 'Log Out'),
           ),
         ]);
   }
