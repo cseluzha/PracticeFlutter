@@ -27,6 +27,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   @override
   Future<List<Product>> getProductsByPage(
       {int limit = 10, int offset = 0}) async {
+        // Can you use query parameters instead of string interpolation
     final response =
         await dio.get<List>('/products?limit=$limit&offset=$offset');
     final List<Product> products = [];
