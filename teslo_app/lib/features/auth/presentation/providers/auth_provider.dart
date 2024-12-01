@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_app/features/auth/domain/domain.dart';
 import 'package:teslo_app/features/auth/infrastructure/infrastructure.dart';
-import 'package:teslo_app/features/shared/infrastructure/inputs/services/key_value_storage_services.dart';
-import 'package:teslo_app/features/shared/infrastructure/inputs/services/key_value_storage_services_impl.dart';
+import 'package:teslo_app/features/shared/infrastructure/services/key_value_storage_services.dart';
+import 'package:teslo_app/features/shared/infrastructure/services/key_value_storage_services_impl.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRepositoryImpl();
