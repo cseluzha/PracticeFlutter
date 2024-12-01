@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:teslo_app/config/config.dart';
 import 'package:teslo_app/features/products/domain/domian.dart';
-import 'package:teslo_app/features/products/infrastructure/mappers/product_mapper.dart';
+import 'package:teslo_app/features/products/infrastructure/infrastructure.dart';
 
 class ProductsDatasourceImpl extends ProductsDatasource {
   late final Dio dio;
@@ -19,15 +19,26 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   }
 
   @override
-  Future<Product> getProductById(String id) {
-    // TODO: implement getProductById
-    throw UnimplementedError();
+  Future<Product> getProductById(String id) async {
+    try {
+      // Can you use query parameters instead of string interpolation
+      final response = await dio.get('/products/$id');
+      final product = ProductMapper.jsonToEntity(response.data);
+      return product;
+    } on DioException catch (e) {
+      if (e.response!.statusCode == 404) {
+        throw ProductNotFound();
+      }
+      throw Exception();
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override
   Future<List<Product>> getProductsByPage(
       {int limit = 10, int offset = 0}) async {
-        // Can you use query parameters instead of string interpolation
+    // Can you use query parameters instead of string interpolation
     final response =
         await dio.get<List>('/products?limit=$limit&offset=$offset');
     final List<Product> products = [];
