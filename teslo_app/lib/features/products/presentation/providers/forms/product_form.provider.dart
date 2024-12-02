@@ -3,18 +3,21 @@ import 'package:formz/formz.dart';
 
 import 'package:teslo_app/config/constants/environment.dart';
 import 'package:teslo_app/features/products/domain/domian.dart';
+import 'package:teslo_app/features/products/presentation/providers/providers.dart';
 import 'package:teslo_app/features/shared/shared.dart';
 
 final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
-//TODO: Implement createUpdateCallback
-  return ProductFormNotifier(product: product
-  //TODO: onSummitCallback: createUpdateCallback
-  );
+  final createUpdateCallback =
+      ref.watch(productsRepositoryProvider).createUpdateProduct;
+
+  return ProductFormNotifier(
+      product: product, onSummitCallback: createUpdateCallback);
 });
 
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
-  final void Function(Map<String, dynamic> productLike)? onSummitCallback;
+  final Future<Product> Function(Map<String, dynamic> productLike)?
+      onSummitCallback;
 
   ProductFormNotifier({this.onSummitCallback, required Product product})
       : super(ProductFormState(
@@ -52,8 +55,12 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
               img.replaceAll('${Environment.apiUrl}/files/pproduct/', ''))
           .toList(),
     };
-    //TODO: Call onSummitCallback  with productLike
-    return true;
+    try {
+      await onSummitCallback!(productLike);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   void _touchedEverything() {
@@ -125,7 +132,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   void onTagsChanged(String value) {
     state = state.copyWith(
-      tags: value,
+      tags: value.trim(),
     );
   }
 
