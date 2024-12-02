@@ -18,9 +18,11 @@ class ProductScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
+    final msgTitle =
+        productState.product!.id == 'new' ? 'New Product' : 'Edit Product';
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Edit Product')),
+        title: Center(child: Text(msgTitle)),
         actions: [
           IconButton(
               icon: const Icon(Icons.camera_alt_outlined), onPressed: () {}),
@@ -32,13 +34,15 @@ class ProductScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (productState.product == null) return;
-
+          final message = productState.product!.id == 'new'
+              ? 'Product created'
+              : 'Product updated';
           ref
               .read(productFormProvider(productState.product!).notifier)
               .onFormSubmit()
               .then((value) {
             if (!value) return;
-            if (context.mounted) showSnackbar(context, 'Product saved');
+            if (context.mounted) showSnackbar(context, message);
           });
         },
         child: const Icon(Icons.save_as_outlined),
