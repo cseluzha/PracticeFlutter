@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'key_value_storage_services.dart';
+import 'key_value_storage_service.dart';
 
-class KeyValueStorageServicesImpl extends KeyValueStorageService {
+class KeyValueStorageServiceImpl extends KeyValueStorageService {
   Future<SharedPreferences> getSharedPreference() async {
     return await SharedPreferences.getInstance();
   }
@@ -53,5 +53,4 @@ class KeyValueStorageServicesImpl extends KeyValueStorageService {
       throw UnimplementedError('Set not implemented for type ${T.runtimeType}');
     }
   }
-  
 }
