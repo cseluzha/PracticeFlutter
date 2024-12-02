@@ -13,9 +13,6 @@ class CameraGalleryServiceImpl extends CameraGalleryService {
     );
 
     if (photo == null) return null;
-
-    print('Select a image ${photo.path}');
-
     return photo.path;
   }
 
@@ -27,9 +24,6 @@ class CameraGalleryServiceImpl extends CameraGalleryService {
         preferredCameraDevice: CameraDevice.rear);
 
     if (photo == null) return null;
-
-    print('Take a image ${photo.path}');
-
     return photo.path;
   }
 }

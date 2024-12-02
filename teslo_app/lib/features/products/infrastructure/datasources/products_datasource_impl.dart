@@ -26,6 +26,9 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final product = ProductMapper.jsonToEntity(response.data);
       return product;
     } on DioException catch (e) {
+      if (e.response!.statusCode == 404) {
+        throw ProductNotFound();
+      }
       throw Exception();
     } catch (e) {
       throw Exception();
