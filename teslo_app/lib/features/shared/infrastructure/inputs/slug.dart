@@ -5,8 +5,11 @@ enum SlugError { empty, format }
 
 // Extend FormzInput and provide the input type and error type.
 class Slug extends FormzInput<String, SlugError> {
+  // for the slug format with - separater:  r'^[a-z0-9]+(?:-[a-z0-9]+)*$'
+  // for the slug format with _ separater:  r'^[a-z0-9]+(?:_[a-z0-9]+)*$'
+  // for the slug format with - or _ separater:  r'^[a-z0-9]+(?:[-_][a-z0-9]+)*$'
   static final RegExp slugRegExp = RegExp(
-    r'^[a-z0-9]+(?:-[a-z0-9]+)*$',
+    r'^[a-z0-9]+(?:[-_][a-z0-9]+)*$',
   );
   // Call super.pure to represent an unmodified form input.
   const Slug.pure() : super.pure('');

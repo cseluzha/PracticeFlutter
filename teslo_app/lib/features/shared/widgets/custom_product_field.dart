@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomProductField extends StatelessWidget {
   final bool isTopField; // The idea is to have rounded borders at the top
@@ -13,6 +14,8 @@ class CustomProductField extends StatelessWidget {
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
+  final bool isNumeric; // The input is numeric
+  final bool allowDecimals; // The input allows decimals
 
   const CustomProductField({
     super.key,
@@ -28,6 +31,8 @@ class CustomProductField extends StatelessWidget {
     this.onChanged,
     this.onFieldSubmitted,
     this.validator,
+    this.isNumeric = false,
+    this.allowDecimals = false,
   });
 
   @override
@@ -39,6 +44,21 @@ class CustomProductField extends StatelessWidget {
         borderRadius: BorderRadius.circular(40));
 
     const borderRadius = Radius.circular(15);
+
+    // Accepted only integers or with decimals
+    final RegExp valueOnlyIntegersOrWithDecimals = RegExp(r'^\d*\.?\d*$');
+    // Accepted only integers
+    final RegExp valueOnlyIntegers = RegExp(r'^\d*$');
+
+    final List<TextInputFormatter>? inputFormatters = isNumeric
+        ? [
+            FilteringTextInputFormatter.allow(
+              allowDecimals
+                  ? valueOnlyIntegersOrWithDecimals
+                  : valueOnlyIntegers,
+            ),
+          ]
+        : null;
 
     return Container(
       // padding: const EdgeInsets.only(bottom: 0, top: 15),
@@ -66,6 +86,7 @@ class CustomProductField extends StatelessWidget {
         style: const TextStyle(fontSize: 15, color: Colors.black54),
         maxLines: maxLines,
         initialValue: initialValue,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           floatingLabelBehavior: maxLines > 1
               ? FloatingLabelBehavior.always
