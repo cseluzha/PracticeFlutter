@@ -46,8 +46,12 @@ class CustomProductField extends StatelessWidget {
     const borderRadius = Radius.circular(15);
 
     // Accepted only integers or with decimals
+    // Only positive numbers: RegExp(r'^\d*\.?\d*$')
+    // Negative numbers: RegExp(r'^-?\d*\.?\d*$')
     final RegExp valueOnlyIntegersOrWithDecimals = RegExp(r'^\d*\.?\d*$');
     // Accepted only integers
+    // Only positive numbers: RegExp(r'^\d*$')
+    // Negative numbers: RegExp(r'^-?\d*$')
     final RegExp valueOnlyIntegers = RegExp(r'^\d*$');
 
     final List<TextInputFormatter>? inputFormatters = isNumeric
@@ -61,7 +65,7 @@ class CustomProductField extends StatelessWidget {
         : null;
 
     return Container(
-      // padding: const EdgeInsets.only(bottom: 0, top: 15),
+      padding: const EdgeInsets.only(bottom: 8, top: 16),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
