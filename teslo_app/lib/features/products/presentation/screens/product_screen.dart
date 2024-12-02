@@ -18,34 +18,40 @@ class ProductScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
-    final msgTitle =
-        productState.product!.id == 'new' ? 'New Product' : 'Edit Product';
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text(msgTitle)),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.camera_alt_outlined), onPressed: () {}),
-        ],
-      ),
-      body: productState.isLoading
-          ? const FullScreenLoader()
-          : _ProductView(product: productState.product!),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (productState.product == null) return;
-          final message = productState.product!.id == 'new'
-              ? 'Product created'
-              : 'Product updated';
-          ref
-              .read(productFormProvider(productState.product!).notifier)
-              .onFormSubmit()
-              .then((value) {
-            if (!value) return;
-            if (context.mounted) showSnackbar(context, message);
-          });
-        },
-        child: const Icon(Icons.save_as_outlined),
+    final msgTitle = productState.isLoading
+        ? 'Loading...'
+        : (productState.product == null || productState.product!.id == 'new')
+            ? 'New Product'
+            : 'Edit Product';
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(child: Text(msgTitle)),
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.camera_alt_outlined), onPressed: () {}),
+          ],
+        ),
+        body: productState.isLoading
+            ? const FullScreenLoader()
+            : _ProductView(product: productState.product!),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (productState.product == null) return;
+            final message = productState.product!.id == 'new'
+                ? 'Product created'
+                : 'Product updated';
+            ref
+                .read(productFormProvider(productState.product!).notifier)
+                .onFormSubmit()
+                .then((value) {
+              if (!value) return;
+              if (context.mounted) showSnackbar(context, message);
+            });
+          },
+          child: const Icon(Icons.save_as_outlined),
+        ),
       ),
     );
   }
@@ -196,6 +202,7 @@ class _SizeSelector extends StatelessWidget {
       }).toList(),
       selected: Set.from(selectedSizes),
       onSelectionChanged: (newSelection) {
+        FocusScope.of(context).unfocus();
         onSizesChanged(List.from(newSelection));
       },
       multiSelectionEnabled: true,
@@ -232,6 +239,7 @@ class _GenderSelector extends StatelessWidget {
         }).toList(),
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
+          FocusScope.of(context).unfocus();
           onGenderChanged(newSelection.first);
         },
       ),
